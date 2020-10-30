@@ -64,5 +64,56 @@ public class VarastoTest {
         // varastossa pitäisi olla tilaa 10 - 8 + 2 eli 4
         assertEquals(4, varasto.paljonkoMahtuu(), vertailuTarkkuus);
     }
-
+    @Test
+    public void uudellaVarastollaPieninMahdollinenTilavuusOnNolla() {
+        varasto = new Varasto(-2.5);
+        assertEquals(0.0, varasto.getTilavuus(), vertailuTarkkuus);
+    }
+    @Test
+    public void uudellaVarastollaOikeaAlkusaldo() {
+        varasto = new Varasto(2.5, 1.0);
+        assertEquals(1.0, varasto.getSaldo(), vertailuTarkkuus);
+    }
+    @Test
+    public void alkusaldollaEiVoiTallettaaYliTilavuudenVerran() {
+        varasto = new Varasto(1.0, 2.5);
+        assertEquals(1.0, varasto.getSaldo(), vertailuTarkkuus);
+    }
+    @Test
+    public void negatiivinenAlkusaldoVastaaNollaa() {
+        varasto = new Varasto(1.0, -0.5);
+        assertEquals(0.0, varasto.getSaldo(), vertailuTarkkuus);
+    }
+    @Test
+    public void alkusaldollaEiVoiTallettaaKelvottomaanVarastoon() {
+        varasto = new Varasto(0.0, 20);
+        assertEquals(0.0, varasto.getSaldo(), vertailuTarkkuus);
+    }
+    @Test
+    public void varastoonEiVoiLisataNegatiivista() {
+        varasto.lisaaVarastoon(-2.5);
+        assertEquals(0.0, varasto.getSaldo(), vertailuTarkkuus);
+    }
+    @Test
+    public void varastoonEiVoiLisataYliTilavuuden() {
+        varasto.lisaaVarastoon(20);
+        assertEquals(10, varasto.getSaldo(), vertailuTarkkuus);
+    }
+    @Test
+    public void varastostaEiVoiOttaaYliSaldon() {
+        varasto.lisaaVarastoon(5);
+        double vert = varasto.otaVarastosta(10);
+        assertEquals(5, vert, vertailuTarkkuus);
+    }
+    @Test
+    public void varastostaEiVoiOttaaNegatiivistaMaaraa() {
+        varasto.lisaaVarastoon(5);
+        double vert = varasto.otaVarastosta(-2.5);
+        assertEquals(0.0, vert, vertailuTarkkuus);
+    }
+    @Test
+    public void varastoTulostaaOikein() {
+        varasto.lisaaVarastoon(5);
+        assertEquals("saldo = 5.0, vielä tilaa 5.0", varasto.toString());
+    }
 }
